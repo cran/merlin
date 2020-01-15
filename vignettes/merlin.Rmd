@@ -95,15 +95,15 @@ r.int.model <- merlin(logb ~ rcs(time, df = 3) + M1[id]*1,
 summary(r.int.model)
 ```
 
-We can also add an additional random-slope term (`M2`) to the model by forming an interaction between the time variable and random-effect using `:`. We can increase the number of quadrature nodes to improve estimation of the likelihood using the `ip` option. 
+We can also add an additional random-slope term (`M2`) to the model by forming an interaction between the time variable and random-effect using `:`. We can increase the number of quadrature nodes to improve estimation of the likelihood using the `ip` option within the `control` argument. 
 
 ```{r, cache = TRUE}
 r.slope.model <- merlin(logb ~ rcs(time, df = 3) + M1[id]*1 + time:M2[id]*1,
                         family = "gaussian",
                         timevar = "time",
                         levels = "id",
-                        ip = 15,
-                        data = pbc)
+                        data = pbc,
+                        control = list(ip = 15))
 summary(r.slope.model)
 ```
 

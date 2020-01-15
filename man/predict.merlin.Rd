@@ -4,8 +4,14 @@
 \alias{predict.merlin}
 \title{predict.merlin - post-estimation tools for merlin}
 \usage{
-\method{predict}{merlin}(object, stat = "eta", type = "fixedonly",
-  predmodel = 1, causes = NULL, ...)
+\method{predict}{merlin}(
+  object,
+  stat = "eta",
+  type = "fixedonly",
+  predmodel = 1,
+  causes = NULL,
+  ...
+)
 }
 \arguments{
 \item{object}{merlin model object}

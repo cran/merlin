@@ -29,6 +29,11 @@ merlin_initial_values <- function(gml,mod)
           else init = rep_len(0,max(gml$bindex[[gml$Nmodels]]))
         }
 
+        # If any Gompertz, replace all starting 0's with 0.1's
+        if ("gompertz" %in% gml$family) {
+          init[init == 0] <- 0.1
+        }
+
         if ("rp" %in% gml$family) {
             init = merlin_rcs_init(gml,init,mod)
         }

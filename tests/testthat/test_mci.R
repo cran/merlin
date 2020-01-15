@@ -1,2 +1,2 @@
-context("ghq_mci")
+testthat::context("ghq_mci")
 #############################################

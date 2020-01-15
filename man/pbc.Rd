@@ -29,7 +29,7 @@
   \item{\code{status2}}{a numeric vector with the value 1 denoting if the patient was dead, and 0 if the patient was alive or transplanted.}
   }}
 \source{
-\code{\link[joineRML]{pbc2}} and \code{\link[survival]{pbc}}.
+\code{\link[survival]{pbc}}.
 }
 \usage{
 data(pbc)

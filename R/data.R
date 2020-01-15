@@ -32,7 +32,7 @@
 #'   \item{\code{status2}}{a numeric vector with the value 1 denoting if the patient was dead, and 0 if the patient was alive or transplanted.}
 #'   }
 #' @keywords datasets
-#' @source \code{\link[joineRML]{pbc2}} and \code{\link[survival]{pbc}}.
+#' @source \code{\link[survival]{pbc}}.
 #' @references Fleming T, Harrington D. \emph{Counting Processes and Survival Analysis}.
 #' 1991; New York: Wiley.
 #' @references Therneau T, Grambsch P. \emph{Modeling Survival Data: Extending the Cox

@@ -4,65 +4,54 @@
 \alias{merlin}
 \title{merlin - Mixed Effects Regression for Linear, Nonlinear and User-defined models}
 \usage{
-merlin(model, from = NULL, ip = NULL, family = "gaussian",
-  link = NULL, timevar = NULL, covariance = "diagonal",
-  intmethod = "ghermite", data, userf = NULL, sweights = NULL,
-  levels = NULL, debug = FALSE, verbose = FALSE, predict = FALSE,
-  predtype = NULL, predmodel = NULL, causes = NULL)
+merlin(
+  model,
+  from = NULL,
+  family = "gaussian",
+  link = NULL,
+  timevar = NULL,
+  covariance = "diagonal",
+  data,
+  userf = NULL,
+  sweights = NULL,
+  levels = NULL,
+  predict = FALSE,
+  predtype = NULL,
+  predmodel = NULL,
+  causes = NULL,
+  control = list()
+)
 }
 \arguments{
 \item{model}{specify the fixed and random elements for each model outcome.
 Where there are multiple outcomes, the models should be specified in a list.
-Each model should be specified as a formula (e.g. \code{y~x}). A number of different element types
-can be specified, including
+Each model should be specified as a formula (e.g. \code{y~x}).
+A number of different element types can be specified, including
 \itemize{
   \item varname - an independent variable from the data set
-  \item random-effects - a random-effect at the cluster level can be specified
-    using \code{M#[cluster level]}, for example \code{M1[id]} would define a random intercept
-    at the ID level. Each independent random-effect should be given a unique name, if two
-    random-effects are given the same name they will be treated as shared random-effects.
-  \item \code{rcs()} - restricted cubic spline terms, this option can be used to include a
-    restricted cubic spline function, with the degrees of freedom (number of spline terms)
-    specified using the \code{df} sub-option, with the boundary knots assumed to be at the
-    minimum and maximum of the variable, with internal knots placed at equally spaced centiles. Other
-    default options \code{orthog=TRUE}, which by default orthogonalises the splines,
-    \code{log=FALSE}, which can be used to calculate splines of the log of the variable
-    and \code{event=F}, which can be used to calculate the internal knots based only on observations
-    that experienced the event of interest (for survival models).
-  \item \code{srcs()} is a shorthand element, equivalent to \code{rcs(...,log=T,event=T)}, for use with
-  survival models.
-  \item \code{fp()} - fractional polynomials of order 1 or 2 can be specified, the
-    sub-option \code{powers} is used to specify the powers of the fp model.
-  \item \code{EV[depvar]} - the expected value of the response of a submodel
-  \item \code{dEV[depvar]} - the first derivative with respect to time of the expected value
-  of the response of a submodel
-  \item \code{d2EV[depvar]} - the second derivative with respect to time of the expected value
-  of the response of a submodel
-  \item \code{iEV[depvar]} - the integral with respect to time of the expected value
-  of the response of a submodel
-  \item \code{XB[depvar]} - the expected value of the complex predictor of a submodel
-  \item \code{dXB[depvar]} - the first derivative with respect to time of the expected value
-  of the complex predictor of a submodel
-  \item \code{d2XB[depvar]} - the second derivative with respect to time of the expected value
-  of the complex predictor of a submodel
-  \item \code{iXB[depvar]} - the integral with respect to time of the expected value
-  of the complex predictor of a submodel
-  \item \code{bhazard(varname)} - invokes a relative survival (excess hazard) model. \code{varname}
-  specifies the expected hazard rate at the event time.
-  \item \code{exposure(varname)} - include \code{log(varname)} in the linear predictor, with a
-  coefficient of 1. For use with \code{family = "poisson"}.
-  \item \code{ap(#)} - defines the number of ancillary parameters. Used with \code{family="user"}.
+  \item random-effects - a random-effect at the cluster level can be specified using \code{M#[cluster level]}, for example \code{M1[id]} would define a random intercept at the ID level.
+  Each independent random-effect should be given a unique name, if two random-effects are given the same name they will be treated as shared random-effects.
+  \item \code{rcs()} - restricted cubic spline terms, this option can be used to include a restricted cubic spline function, with the degrees of freedom (number of spline terms) specified using the \code{df} sub-option, with the boundary knots assumed to be at the minimum and maximum of the variable, with internal knots placed at equally spaced centiles.
+  Other default options \code{orthog = TRUE}, which by default orthogonalises the splines, \code{log = FALSE}, which can be used to calculate splines of the log of the variable and \code{event = F}, which can be used to calculate the internal knots based only on observations that experienced the event of interest (for survival models).
+  \item \code{srcs()} is a shorthand element, equivalent to \code{rcs(..., log = TRUE, event = TRUE)}, for use with survival models.
+  \item \code{fp()} - fractional polynomials of order 1 or 2 can be specified, the sub-option \code{powers} is used to specify the powers of the \code{fp} model.
+  \item \code{EV[depvar]} - the expected value of the response of a submodel.
+  \item \code{dEV[depvar]} - the first derivative with respect to time of the expected value of the response of a submodel.
+  \item \code{d2EV[depvar]} - the second derivative with respect to time of the expected value of the response of a submodel.
+  \item \code{iEV[depvar]} - the integral with respect to time of the expected value of the response of a submodel.
+  \item \code{XB[depvar]} - the expected value of the complex predictor of a submodel.
+  \item \code{dXB[depvar]} - the first derivative with respect to time of the expected value of the complex predictor of a submodel.
+  \item \code{d2XB[depvar]} - the second derivative with respect to time of the expected value of the complex predictor of a submodel.
+  \item \code{iXB[depvar]} - the integral with respect to time of the expected value of the complex predictor of a submodel.
+  \item \code{bhazard(varname)} - invokes a relative survival (excess hazard) model.
+  \code{varname} specifies the expected hazard rate at the event time.
+  \item \code{exposure(varname)} - include \code{log(varname)} in the linear predictor, with a coefficient of 1.
+  For use with \code{family = "poisson"}.
+  \item \code{ap(#)} - defines the number of ancillary parameters.
+  Used with \code{family="user"}.
 }}
 
-\item{from}{this is an optional argument giving the initial values for the full parameter
-vector, for more details on how to specify the initial estimates see the vignette.}
-
-\item{ip}{an optional vector of integers specifying the number of integration points
-to be used when integrating out the random effects. A different number of \code{ip} can be
-specified for each \code{level} (from highest to lowest level). If only a single number is given then
-it will assume that number of integration points at all levels. Default is \code{ip = 7} for each
-level using Gauss-Hermite quadrature, or \code{ip = 100} for each level using Monte-Carlo
-integration.}
+\item{from}{this is an optional argument giving the initial values for the full parameter vector, for more details on how to specify the initial estimates see the vignette.}
 
 \item{family}{a vector of strings specifying the family for each outcome specified in model.
 The currently available models include,
@@ -83,48 +72,30 @@ with survival models including,
 }
 and user-defined,
 \itemize{
-  \item \code{user} - fit a user-defined model, which should be written using \code{merlin}'s
-  utility functions. The name of your user-defined function should be passed through the
-  \code{userf} option.
-  \item \code{null} - is a convenience tool to define additional complex predictors, that
-  do not contribute to the log likelihood. For use with \code{family="user"}.
+  \item \code{user} - fit a user-defined model, which should be written using \code{merlin}'s utility functions.
+  The name of your user-defined function should be passed through the \code{userf} option.
+  \item \code{null} - is a convenience tool to define additional complex predictors, that do not contribute to the log likelihood.
+  For use with \code{family = "user"}.
 }}
 
-\item{link}{string vector defining the link functions for each model. Default is \code{"identity"} for
-all models. If specified, you must define a link function for all submodels. Options include
-\code{"identity"}, \code{"log"} and \code{"logit"}.}
+\item{link}{string vector defining the link functions for each model.
+Default is \code{"identity"} for all models.
+If specified, you must define a link function for all submodels.
+Options include \code{"identity"}, \code{"log"} and \code{"logit"}.}
 
-\item{timevar}{specifies the variable which represents time, this is necessary when a function of time
-is used in the linear predictor of a survival model as it may interact with other elements of the model.}
+\item{timevar}{specifies the variable which represents time, this is necessary when a function of time is used in the linear predictor of a survival model as it may interact with other elements of the model.}
 
-\item{covariance}{the structure of the variance-covariance matrix can be varied, the default is
-\code{diagonal} where all diagonal elements of the variance-covariance matrix are estimated uniquely,
-\code{identity} assumes all diagonal elements are equal and \code{unstructured} estimates all
-elements of the variance-covariance matrix.}
+\item{covariance}{the structure of the variance-covariance matrix can be varied, the default is \code{diagonal} where all diagonal elements of the variance-covariance matrix are estimated uniquely, \code{identity} assumes all diagonal elements are equal and \code{unstructured} estimates all elements of the variance-covariance matrix.}
 
-\item{intmethod}{method used for numerically integrating out the random-effects in order to
-calculate the likelihood for a mixed effects model which includes random effects.
-Options include \code{ghermite} for non-adaptive Gauss-Hermite quadrature, \code{halton} for
-Monte-Carlo integration using Halton sequences, or \code{sobol} for Monte-Carlo integration
-using Sobol sequences, or \code{mc} for standard Monte-Carlo integration using normal draws. The
-default is \code{ghermite}. Level-specific integration techniques can
-be specified, for example, with a three level model, we may use Gauss-Hermite quadrature at the
-highest level, and Monte-Carlo integration with Halton sequences at level 2, using
-\code{intmethod = c("ghermite","halton")}.}
-
-\item{data}{a data frame containing all variables required for fitting the model. Can be a tibble object.}
+\item{data}{a data frame containing all variables required for fitting the model.
+Can be a \code{tibble} object.}
 
 \item{userf}{string vector defining the name of the user-written functions for each \code{family="user"}.
 Each function must be in memory and should return the observation level contribution to the log-likelihood.}
 
 \item{sweights}{Not documented.}
 
-\item{levels}{if the model contains random-effects then a vector giving the order of levels must
-be specified, from the highest level to the lowest, e.g. \code{levels=c("practice","id")}.}
-
-\item{debug}{Not documented.}
-
-\item{verbose}{Not documented.}
+\item{levels}{if the model contains random-effects then a vector giving the order of levels must be specified, from the highest level to the lowest, e.g. \code{levels=c("practice","id")}.}
 
 \item{predict}{Not documented.}
 
@@ -133,6 +104,26 @@ be specified, from the highest level to the lowest, e.g. \code{levels=c("practic
 \item{predmodel}{Not documented.}
 
 \item{causes}{Not documented.}
+
+\item{control}{A list of parameters that control the estimation algorithm.
+Generally it should not be modified, unless there are convergence issues.
+Possible values are:
+\itemize{
+  \item \code{ip} An optional vector of integers specifying the number of integration points to be used when integrating out the random effects.
+  A different number of \code{ip} can be specified for each \code{level} (from highest to lowest level).
+  If only a single number is given then \code{merlin} will assume that number of integration points at all levels.
+  Default is \code{ip = 7} for each level using Gauss-Hermite quadrature, or \code{ip = 100} for each level using Monte-Carlo integration;
+  \item \code{intmethod} The method used for numerically integrating out the random-effects in order to calculate the likelihood for a mixed effects model which includes random effects.
+  Options include \code{ghermite} for non-adaptive Gauss-Hermite quadrature, \code{halton} for Monte-Carlo integration using Halton sequences, \code{sobol} for Monte-Carlo integration using Sobol sequences, or \code{mc} for standard Monte-Carlo integration using normal draws.
+  The default is \code{ghermite}.
+  Level-specific integration techniques can be specified, for example, with a three level model, we may use Gauss-Hermite quadrature at the highest level, and Monte-Carlo integration with Halton sequences at level 2, using \code{intmethod = c("ghermite","halton")}.
+  \item \code{debug} Not documented.
+  \item \code{verbose} Not documented.
+  \item \code{optim.method} The \code{optim} method to be used.
+  Defaults to Nelder-Mead, see \link[stats]{optim} for available methods.
+  \item \code{maxit} The maximum number of iterations for the optimisation routine.
+  Defaults to 5000.
+}}
 }
 \description{
 merlin fits linear, non-linear and user-defined mixed effects regression models. merlin can fit
@@ -150,7 +141,7 @@ are supported. Utility functions are provided to allow user-defined models to be
 in conjunction with the complex predictor.
 }
 \examples{
-\donttest{
+\dontrun{
 library(merlin)
 data(pbc.merlin, package = "merlin")
 

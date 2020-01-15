@@ -125,5 +125,7 @@ merlin_error_check <- function(model,data,timevar,family,link,intmethod,
     }
   }
   if (sum(timevar_needed) > 0 & length(timevar) == 0) stop("timevar option must be specified for this model")
-
+  for (tv in seq_along(timevar)) {
+    if (!(timevar[tv] %in% colnames(data))) stop(paste0("timevar '", timevar[tv], "' is not a column of the input dataset"), call. = FALSE)
+  }
 }
