@@ -19,6 +19,9 @@ merlin(
   predtype = NULL,
   predmodel = NULL,
   causes = NULL,
+  at = NULL,
+  contrast = NULL,
+  modelfit = NULL,
   control = list()
 )
 }
@@ -104,6 +107,12 @@ Each function must be in memory and should return the observation level contribu
 \item{predmodel}{Not documented.}
 
 \item{causes}{Not documented.}
+
+\item{at}{Not documented.}
+
+\item{contrast}{Not documented.}
+
+\item{modelfit}{Not documented.}
 
 \item{control}{A list of parameters that control the estimation algorithm.
 Generally it should not be modified, unless there are convergence issues.

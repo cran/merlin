@@ -84,6 +84,9 @@
 #' @param predtype Not documented.
 #' @param predmodel Not documented.
 #' @param causes Not documented.
+#' @param at Not documented.
+#' @param contrast Not documented.
+#' @param modelfit Not documented.
 #' @param control A list of parameters that control the estimation algorithm.
 #' Generally it should not be modified, unless there are convergence issues.
 #' Possible values are:
@@ -185,9 +188,11 @@ merlin <- function(model,
                    predtype = NULL,
                    predmodel = NULL,
                    causes = NULL,
+                   at = NULL,
+                   contrast = NULL,
+                   modelfit = NULL,
                    control = list())
 {
-
 
     # Process list of control arguments
     control.default <- list(ip = NULL, intmethod = "ghermite", debug = FALSE, verbose = FALSE, optim.method = "Nelder-Mead", maxit = 5000)
@@ -230,9 +235,20 @@ merlin <- function(model,
                      predtype = predtype,
                      predmodel = predmodel,
                      causes = causes,
+                     at=at,
+                     contrast = contrast,
+                     modelfit = modelfit,
                      control = control)
 
     if (isFALSE(predict)) {
+        # If ip = NULL, then assign the default values to the control object (gets NULL otherwise)
+        if (is.null(est$control$ip)) {
+            if (est$control$intmethod == "ghermite") {
+                est$control$ip <- 7
+            } else {
+                est$control$ip <- 100
+            }
+        }
         est$call   <- match.call()
         est$data   <- data.name
         class(est) <- "merlin"
@@ -241,7 +257,7 @@ merlin <- function(model,
 }
 
 # MERLIN
-merlinEst <- function(model, from, family, link, timevar, covariance, data, userf, sweights, levels, predict, predtype, predmodel, causes, control)
+merlinEst <- function(model, from, family, link, timevar, covariance, data, userf, sweights, levels, predict, predtype, predmodel, causes, at, contrast, modelfit, control)
 {
 
     #setup
@@ -286,7 +302,7 @@ merlinEst <- function(model, from, family, link, timevar, covariance, data, user
         gml$par      = from
         gml$modelind = gml$modtouse = predmodel
         if (length(causes)) gml$causes = causes
-        pred = merlin_predict(gml,predtype)
+        pred = merlin_predict(gml,predtype,at,contrast,modelfit)
         return(pred)
     }
 

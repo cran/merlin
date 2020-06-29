@@ -30,6 +30,16 @@
 #'     be cause-specific event time models contributing to the calculation. This can be overridden
 #'     using the \code{causes} option. \code{totaltimelost} is the sum of the \code{timelost} due to
 #'     all causes.
+#'     \item \code{cifdifference} calculates the difference in \code{cif} predictions between values 
+#'     of a covariate specified using the \code{contrast} option.
+#'     \item \code{hdifference} calculates the difference in \code{hazard} predictions between values 
+#'     of a covariate specified using the \code{contrast} option. 
+#'     \item \code{rmstdifference} calculates the difference in \code{rmst} predictions between values 
+#'     of a covariate specified using the \code{contrast} option. 
+#'     \item \code{mudifference} calculates the difference in \code{mu} predictions between values 
+#'     of a covariate specified using the \code{contrast} option. 
+#'     \item \code{etadifference} calculates the difference in \code{eta} predictions between values 
+#'     of a covariate specified using the \code{contrast} option.  
 #'   }
 #' @param type the type of prediction, either:
 #'   \itemize{
@@ -45,6 +55,11 @@
 #' the calculation. If this is not the case, then you can specify which models (indexed using
 #' the order they appear in your merlin model by using the \code{causes} option, e.g.
 #' \code{causes=c(1,2)}.
+#' @param at specify covariate values for prediction. Fixed values of covariates should be specified
+#' in a list e.g. at = c("trt" = 1, "age" = 50).
+#' @param contrast specifies the values of a covariate to be used when comparing statistics, 
+#' such as when using the \code{cifdifference} option to compare cumulative incidence functions, 
+#' e.g. \code{contrast = c("trt" = 0, "trt" = 1)}.
 #' @param ... other options
 #'
 #' @seealso \code{\link{merlin}}
@@ -73,46 +88,93 @@ predict.merlin<- function(object,
                           type="fixedonly",
                           predmodel=1,
                           causes=NULL,
+                          at=NULL,
+                          contrast=NULL,
                           ...)
 {
     if (class(object)!="merlin") stop("model object must be of class merlin")
-
+    
+    modelfit <- object # necessary if predict calls itself (for difference options)
+  
     if (type!="fixedonly" & type!="marginal")
       stop("Invalid predictions type",call. = FALSE)
-
+  
     b           <- object$par
     predtype    <- c(stat,type)
-    pred        <- stats::update(object,
+    # stats::update will update and (by default) re-fit a model
+    pred        <- stats::update(object=object,
                                  predict=TRUE,
                                  from=b,
                                  predtype=predtype,
                                  predmodel=predmodel,
-                                 causes=causes)
+                                 causes=causes,
+                                 at=at,
+                                 contrast=contrast,
+                                 modelfit=modelfit)
     class(pred) <- NULL
     pred
 }
 
-merlin_predict<- function(gml,predtype)
-{
+merlin_predict<- function(gml,predtype,at=NULL,contrast=NULL,modelfit=NULL) {
+  
     stat <- predtype[1]
     type <- predtype[2]
 
     f = gml$family[gml$modelind]
     issurv = merlin_issurv(f)
-    merlin_predict_error_check(gml,stat,issurv,f)
-
+    merlin_predict_error_check(gml,stat,issurv,f,at,contrast)
+    
+    #if at option specified change variable in data set
+    if (is.null(at) == F) {
+      #preserve version of variable in data, then replace column in gml$data
+      saved_at <- matrix(nrow = length(gml$data[,1]), ncol = length(at))
+      #loop through the vector of at options 
+      for (a in 1:length(at)) {
+        saved_at[,a] <- gml$data[,names(at[a])]
+        gml$data[,names(at[a])] <- as.numeric(at[a])
+      }
+    }
+    
     #fill up timevar for survival models with response
     if (issurv) gml$timevar[gml$modelind] <- gml$y[[gml$modelind]][1]
 
     #fill up VCV and nodes
     gml  <- merlin_xb(gml)
-
-    pf   <- merlin_p_getpf(gml,stat)
-    res  <- merlin_predict_core(gml,pf,type)
+    
+    if (stat != "cifdifference" & stat != "hdifference" & stat != "rmstdifference" & stat != "mudifference" & stat != "etadifference") {
+      pf   <- merlin_p_getpf(gml,stat)
+      res  <- merlin_predict_core(gml,pf,type)
+    } else {
+      if (stat == "hdifference")     diff = "hazard " 
+      if (stat == "cifdifference")   diff = "cif" 
+      if (stat == "rmstdifference")  diff = "rmst "
+      if (stat == "mudifference")    diff = "mu"
+      if (stat == "etadifference")   diff = "eta"
+      
+     res <-   predict.merlin(modelfit, 
+                     stat=diff,
+                     type=type,
+                     predmodel=gml$modelind,
+                     causes=gml$causes,
+                     at=contrast[1]) -
+              predict.merlin(modelfit, 
+                     stat=diff,
+                     type=type,
+                     predmodel=gml$modelind,
+                     causes=gml$causes,
+                     at=contrast[2])
+    }
+    
+    # restore data
+    if (is.null(at) == F) {
+      for (a in 1:length(at)) {
+        gml$data[,names(at[a])] <- saved_at[,a] 
+      }
+    }
     return(res)
 }
 
-merlin_predict_error_check <- function(gml,stat,issurv,f)
+merlin_predict_error_check <- function(gml,stat,issurv,f,at,contrast)
 {
 
     if (gml$modelind > gml$Nmodels) {
@@ -129,6 +191,18 @@ merlin_predict_error_check <- function(gml,stat,issurv,f)
         if (f=="gompertz" | f=="lquantile" | f=="rcs" | f=="rp" | f=="user" | f=="ordinal" | f=="loghazard" | f=="user") {
             stop("mu not supported with specified merlin family",call. = FALSE)
         }
+    }
+  
+    if (is.null(at) == F) {
+      for (a in 1:length(at)) {
+        if ((names(at[a]) %in% colnames(gml$data)) == F ) stop("variable specified in at option not available in dataset")
+      }
+    }
+  
+    if (stat== "cifdifference" | stat == "hdifference" | stat == "rmstdifference" | stat == "mudifference" | stat == "etadifference") {
+      if (is.null(contrast) == T) stop("contrast option must be used with difference predictions")
+      if (length(contrast) != 2) stop("two values must be specified in contrast for difference to be calculated")
+      if (names(contrast[1]) != names(contrast[2])) stop("the contrast must be between two levels of the same covariate")
     }
 
 }

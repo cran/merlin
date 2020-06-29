@@ -10,6 +10,8 @@
   type = "fixedonly",
   predmodel = 1,
   causes = NULL,
+  at = NULL,
+  contrast = NULL,
   ...
 )
 }
@@ -41,6 +43,16 @@
   be cause-specific event time models contributing to the calculation. This can be overridden
   using the \code{causes} option. \code{totaltimelost} is the sum of the \code{timelost} due to
   all causes.
+  \item \code{cifdifference} calculates the difference in \code{cif} predictions between values 
+  of a covariate specified using the \code{contrast} option.
+  \item \code{hdifference} calculates the difference in \code{hazard} predictions between values 
+  of a covariate specified using the \code{contrast} option. 
+  \item \code{rmstdifference} calculates the difference in \code{rmst} predictions between values 
+  of a covariate specified using the \code{contrast} option. 
+  \item \code{mudifference} calculates the difference in \code{mu} predictions between values 
+  of a covariate specified using the \code{contrast} option. 
+  \item \code{etadifference} calculates the difference in \code{eta} predictions between values 
+  of a covariate specified using the \code{contrast} option.  
 }}
 
 \item{type}{the type of prediction, either:
@@ -59,6 +71,13 @@ survival models included in the merlin model are cause-specific hazard models co
 the calculation. If this is not the case, then you can specify which models (indexed using
 the order they appear in your merlin model by using the \code{causes} option, e.g.
 \code{causes=c(1,2)}.}
+
+\item{at}{specify covariate values for prediction. Fixed values of covariates should be specified
+in a list e.g. at = c("trt" = 1, "age" = 50).}
+
+\item{contrast}{specifies the values of a covariate to be used when comparing statistics, 
+such as when using the \code{cifdifference} option to compare cumulative incidence functions, 
+e.g. \code{contrast = c("trt" = 0, "trt" = 1)}.}
 
 \item{...}{other options}
 }

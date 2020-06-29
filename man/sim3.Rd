@@ -4,7 +4,9 @@
 \name{sim3}
 \alias{sim3}
 \title{Simulated 3-level survival data}
-\format{A data frame...}
+\format{
+A data frame...
+}
 \usage{
 data(sim3)
 }

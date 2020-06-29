@@ -45,17 +45,16 @@ testthat::test_that("Test 2.1", {
   )
 })
 
-# test_that("Test 2.2", { # it won't really allow for this right now
-#   errormessage <- "If more than one level is used, order must be specified"
-#   expect_error(megenreg(model=list(logp ~ M1[id]*1,
-#                                    logb ~ M2[id]*1),
-#                       nodes=9,
-#                       family=c("gaussian"),
-#                       levels=c("id"),
-#                       covariance="identity",
-#                       data=pbc.merlin),
-#                errormessage)
-# })
+test_that("Test 2.2", { # it won't really allow for this right now
+  errormessage <- "region has not been included in the levels option"
+  expect_error(merlin(model=list(logp ~ M1[id]*1,
+                                 logb ~ M2[region]*1),
+                      family=c("gaussian","gaussian"),
+                      levels=c("id"),
+                      covariance="identity",
+                      data=pbc.merlin),
+               errormessage)
+})
 
 # Specified levels must refer to a column in data
 testthat::test_that("Test 2.3", {

@@ -1,5 +1,5 @@
 Package: merlin
-Version: 0.0.2
+Version: 0.1.0
 Title: Mixed Effects Regression for Linear, Non-Linear and User-Defined
         Models
 Description: Fits linear, non-linear, and user-defined mixed effects regression models following 
@@ -36,15 +36,16 @@ Imports: MASS, randtoolbox, statmod, stats, survival, tools
 Suggests: knitr, nlme, rmarkdown, testthat
 URL: https://www.mjcrowther.co.uk/software/merlin
 VignetteBuilder: knitr
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1
 LazyData: true
 Encoding: UTF-8
 ByteCompile: true
+Language: en_GB
 NeedsCompilation: no
-Packaged: 2020-01-15 16:56:37 UTC; ellessenne
+Packaged: 2020-06-29 15:06:24 UTC; ellessenne
 Author: Emma Martin [aut],
   Alessandro Gasparini [aut],
   Michael Crowther [aut, cre]
 Maintainer: Michael Crowther <michael.crowther@le.ac.uk>
 Repository: CRAN
-Date/Publication: 2020-01-15 18:00:02 UTC
+Date/Publication: 2020-06-29 17:00:03 UTC

@@ -5,7 +5,8 @@
 \alias{pbc}
 \alias{pbc.merlin}
 \title{Mayo Clinic primary biliary cirrhosis data}
-\format{A data frame with 1945 observations on the following 20 variables:
+\format{
+A data frame with 1945 observations on the following 20 variables:
   \describe{
   \item{\code{id}}{patients identifier; in total there are 312 patients.}
   \item{\code{years}}{number of years between registration and the earlier of death, transplantation, or study analysis time.}
@@ -27,7 +28,10 @@
   \item{\code{prothrombin}}{prothrombin time in seconds.}
   \item{\code{histologic}}{histologic stage of disease.}
   \item{\code{status2}}{a numeric vector with the value 1 denoting if the patient was dead, and 0 if the patient was alive or transplanted.}
-  }}
+  }
+
+An object of class \code{data.frame} with 1945 rows and 25 columns.
+}
 \source{
 \code{\link[survival]{pbc}}.
 }
@@ -46,7 +50,7 @@ This data is from the Mayo Clinic trial in primary biliary
   312 patients with largely complete data.
 }
 \note{
-\code{pbc.merlin} is a version of the \code{pbc} dataset in merlin format.
+\code{pbc.merlin} is a version of the \code{pbc} dataset in \code{merlin} format.
 }
 \references{
 Fleming T, Harrington D. \emph{Counting Processes and Survival Analysis}.

@@ -18,13 +18,13 @@ knitr::opts_chunk$set(
 
 ## Description
 
-The merlin package allows the fitting of multi outcome models and with any number of nested random effects, outcomes can be modelled jointly, or with shared random effects. 
+The `merlin` package allows the fitting of multi-outcome models and with any number of nested random effects, outcomes can be modelled jointly, or with shared random effects. 
 
 ## Missing data
 
-For n record to be included in the model there must be at least one observation per level in the model. For example in a joint survival and longitudinal biomarker model, if the survival time for a patient is avaliable, but all longitudinal biomarker observations are missing, the individual will be excluded from the analysis.
+For n record to be included in the model there must be at least one observation per level in the model. For example in a joint survival and longitudinal biomarker model, if the survival time for a patient is available, but all longitudinal biomarker observations are missing, the individual will be excluded from the analysis.
 
-For each individual outcome in the model, a complete case analysis is used. The response, covariates and level indicators are required to fit the model, which may vary by outcome. For example if a model simultaneously models two seperate biomarkers, which are sampled at different time points, data in each record will only be included in the model for the appropriate outcome, potentially resulting in different sample sizes being used for each outcome.
+For each individual outcome in the model, a complete case analysis is used. The response, covariates and level indicators are required to fit the model, which may vary by outcome. For example if a model simultaneously models two separate biomarkers, which are sampled at different time points, data in each record will only be included in the model for the appropriate outcome, potentially resulting in different sample sizes being used for each outcome.
 
 ## Variance-covariance matrix structure 
 
@@ -45,7 +45,7 @@ data("pbc")
 pbc[1:11,c("id","years","status","status2","drug","serBilir","prothrombin","year")]
 ```
 
-The event times are given in the `years` variable and the event indicator in the `status` variable which can take the values alive, dead or transplanted or the `status2` variable which is 0 for alive and 1 for dead. Each survival observation should only appear once for each individudal, otherwise each observation will be treated as a seperate event, this allows for recurrent events to be modelled. The survival observations can be reformatted as follows:
+The event times are given in the `years` variable and the event indicator in the `status` variable which can take the values alive, dead or transplanted or the `status2` variable which is 0 for alive and 1 for dead. Each survival observation should only appear once for each individual, otherwise each observation will be treated as a separate event, this allows for recurrent events to be modelled. The survival observations can be reformatted as follows:
 
 ```{r}
 pbc$stime <- pbc$years
@@ -54,7 +54,7 @@ pbc$died <- pbc$status2
 pbc$died[duplicated(pbc$id)] <- NA
 ```
 
-We are also going to work with the log of biomarkers prothrombin index and serum bilirubin throughout, the time of this measurments will be recorded in the variable time. We will also change the treatment variable to be numeric rather than a factor variable.
+We are also going to work with the log of biomarkers prothrombin index and serum bilirubin throughout, the time of this measurements will be recorded in the variable time. We will also change the treatment variable to be numeric rather than a factor variable.
 
 ```{r}
 pbc$logb <- log(pbc$serBilir) 
